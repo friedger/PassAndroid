@@ -40,7 +40,7 @@ class EditViewHolder(view: CardView) : VerbosePassViewHolder(view), TimePickerDi
     override fun setupButtons(activity: Activity, pass: Pass) {
 
         view.timeAndNavBar.timeButton.text = view.context.getString(R.string.edit_time)
-        view.timeAndNavBar.timeButton.text = view.context.getString(R.string.edit_location)
+        view.timeAndNavBar.locationButton.text = view.context.getString(R.string.edit_location)
 
         view.timeAndNavBar.timeButton.setOnClickListener {
             DatePickerDialog(view.context, this, time.year, time.month.value - 1, time.dayOfMonth).show()
