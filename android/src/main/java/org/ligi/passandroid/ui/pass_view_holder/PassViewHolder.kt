@@ -27,7 +27,7 @@ abstract class PassViewHolder(val view: CardView) : RecyclerView.ViewHolder(view
 
     open fun setupButtons(activity: Activity, pass: Pass) {
         view.timeAndNavBar.timeButton.text = view.context.getString(R.string.pass_to_calendar)
-        view.timeAndNavBar.timeButton.text = view.context.getString(R.string.pass_directions)
+        view.timeAndNavBar.locationButton.text = view.context.getString(R.string.pass_directions)
 
         view.timeAndNavBar.timeButton.setOnClickListener {
             getDateOrExtraText(pass)?.let { tryAddDateToCalendar(pass, view, it) }
