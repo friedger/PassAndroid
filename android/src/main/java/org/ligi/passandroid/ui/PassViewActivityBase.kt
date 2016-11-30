@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -30,7 +29,7 @@ import java.io.IOException
 @RuntimePermissions
 open class PassViewActivityBase : PassAndroidActivity() {
 
-    var currentPass: Pass? = null
+    lateinit var currentPass: Pass
     private var fullBrightnessSet = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,12 +63,15 @@ open class PassViewActivityBase : PassAndroidActivity() {
             val passbookForId = passStore.getPassbookForId(uuid)
             passStore.currentPass = passbookForId
         }
-        currentPass = passStore.currentPass
 
-        if (currentPass == null) {
+
+        if (passStore.currentPass == null) {
             tracker.trackException("pass not present in " + this, false)
             finish()
+            return
         }
+
+        currentPass = passStore.currentPass!!
 
         configureActionBar()
 
@@ -99,7 +101,7 @@ open class PassViewActivityBase : PassAndroidActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (PassMenuOptions(this, currentPass!!).process(item)) {
+        if (PassMenuOptions(this, currentPass).process(item)) {
             return true
         }
 
@@ -138,12 +140,16 @@ open class PassViewActivityBase : PassAndroidActivity() {
     fun createShortcut() {
         val intent = Intent("com.android.launcher.action.INSTALL_SHORTCUT")
         val shortcutIntent = Intent()
-        shortcutIntent.putExtra(EXTRA_KEY_UUID, currentPass!!.id)
+        shortcutIntent.putExtra(EXTRA_KEY_UUID, currentPass.id)
         val component = ComponentName(BuildConfig.APPLICATION_ID, BuildConfig.APPLICATION_ID + ".ui.PassViewActivity")
         shortcutIntent.component = component
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent)
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, currentPass!!.description)
-        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, Bitmap.createScaledBitmap(currentPass!!.getBitmap(passStore, BITMAP_ICON), 128, 128, true))
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, currentPass.description)
+
+        currentPass.getBitmap(passStore, BITMAP_ICON).let {
+            //   intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, Bitmap.createScaledBitmap(it, 128, 128, true))
+        }
+
         sendBroadcast(intent)
     }
 
@@ -161,7 +167,7 @@ open class PassViewActivityBase : PassAndroidActivity() {
 
             val client = OkHttpClient()
 
-            val url = pass!!.webServiceURL + "/v1/passes/" + pass.passIdent + "/" + pass.serial
+            val url = pass.webServiceURL + "/v1/passes/" + pass.passIdent + "/" + pass.serial
             val requestBuilder = Request.Builder().url(url)
             requestBuilder.addHeader("Authorization", "ApplePass " + pass.authToken!!)
 
@@ -206,12 +212,12 @@ open class PassViewActivityBase : PassAndroidActivity() {
                     return@Runnable
                 }
                 dlg.dismiss()
-                if (currentPass!!.id != uuid) {
-                    passStore.deletePassWithId(currentPass!!.id)
+                if (currentPass.id != uuid) {
+                    passStore.deletePassWithId(currentPass.id)
                 }
                 val newPass = passStore.getPassbookForId(uuid)
                 passStore.currentPass = newPass
-                currentPass = passStore.currentPass
+                currentPass = passStore.currentPass!!
                 refresh()
 
                 Snackbar.make(window.decorView, R.string.pass_updated, Snackbar.LENGTH_LONG).show()
