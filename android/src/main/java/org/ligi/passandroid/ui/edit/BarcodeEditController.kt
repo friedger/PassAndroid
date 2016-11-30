@@ -59,22 +59,19 @@ class BarcodeEditController(val rootView: View, internal val context: AppCompatA
 
     }
 
-
     init {
         intentFragment = IntentFragment()
         barcodeFormat = barCode.format
 
         randomButton.setOnClickListener({
             if (barcodeFormat == EAN_13) {
-                messageInput.setText(EANHelper.getRandomEAN13())
+                messageInput.setText(getRandomEAN13())
             } else {
                 messageInput.setText(UUID.randomUUID().toString().toUpperCase())
             }
 
             refresh()
         })
-
-
 
         scanButton.setOnClickListener({
             val barCodeIntentIntegrator = BarCodeIntentIntegrator(intentFragment)
