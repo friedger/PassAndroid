@@ -15,7 +15,6 @@ import android.view.WindowManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import org.ligi.passandroid.App
 import org.ligi.passandroid.BuildConfig
 import org.ligi.passandroid.R
 import org.ligi.passandroid.model.InputStreamWithSource
@@ -51,7 +50,6 @@ open class PassViewActivityBase : PassAndroidActivity() {
             // Ignore - but at least we tried ;-)
         }
 
-        App.component().inject(this)
     }
 
     override fun onResume() {
