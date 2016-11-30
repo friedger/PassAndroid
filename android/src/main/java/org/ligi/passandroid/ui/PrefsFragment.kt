@@ -40,7 +40,7 @@ class PrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPref
     }
 
 
-    override fun onCreatePreferences(bundle: Bundle, rootKey: String) {
+    override fun onCreatePreferences(bundle: Bundle?, rootKey: String) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
     }
 
