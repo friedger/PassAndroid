@@ -45,7 +45,7 @@ class PrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPref
     }
 
     @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-    internal fun ensureDayNight() {
+    fun ensureDayNight() {
         // Intentionally empty
     }
 
